@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CPR.AI Bluetooth - Jeevtronics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Apple Touch Icon for iOS home screen -->
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+
+  <!-- Header: branding + logout -->
+  <div class="app-header">
+    <div class="branding">
+      <img src="icon.png" alt="logo" />
+      JEEVTRONICS 
+    </div>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <!-- Title & status -->
+  <h2 class="page-title">CPR.AI <span class="status-dot" id="statusDot"></span></h2>
+
+  <!-- Controls (panel) -->
+  <div class="panel center-panel">
+    <div class="controls">
+      <button id="connectBtn" class="btn">Connect</button>
+      <button id="disconnectBtn" class="btn">Disconnect</button>
+    </div>
+
+    <div class="session-controls">
+      <input id="traineeName" placeholder="Enter trainee name" />
+      <button id="startTrainingBtn" class="btn">Start Training</button>
+      <button id="stopTrainingBtn" class="btn">Stop Training</button>
+      <button id="downloadBtn" class="btn">Download CSV</button>
+      <button id="nextSessionBtn" class="btn">Start Next Session</button>
+    </div>
+  </div>
+
+  <!-- Top half: depth panel -->
+  <div class="panel">
+  <!-- In index.html -->
+<div class="depth-wrapper">
+  <div id="depthValue" class="depth-value">Depth: 0.0 mm</div>
+  <div class="depth-container">
+    <div class="depth-track" role="img" aria-label="Depth bar">
+      <div id="depthFill" class="depth-fill"></div>
+    </div>
+    <!-- Depth scale markers - IMPORTANT: Order matters! -->
+    <div class="depth-markers">
+   
+      <div class="depth-marker">60</div>
+      <div class="depth-marker">50</div>
+      <div class="depth-marker">40</div>
+      <div class="depth-marker">30</div>
+      <div class="depth-marker">20</div>
+      <div class="depth-marker">10</div>  
+       <!-- Bottom -->
+    </div>
+  </div>
+</div>
+  </div>
+
+  <!-- Lower half: gauge panel -->
+  <div class="panel">
+    <div class="gauge-container" aria-hidden="false">
+      <svg viewBox="0 0 540 320" role="img" aria-label="CPR Rate Gauge">
+        <defs>
+                  <!-- UPDATED: 0-200 range with green only for 100-120 -->
+          <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <!-- 0-100 CPM: 0% to 25% - RED (180° to 225°) -->
+          <stop offset="0%" stop-color="#d32f2f"/>
+          <stop offset="14%" stop-color="#d32f2f"/>
+          
+          <!-- 100-120 CPM: 25% to 75% - GREEN (225° to 315°) -->
+          <stop offset="15%" stop-color="#388e3c"/>
+          <stop offset="85%" stop-color="#388e3c"/>
+          
+          <!-- 120-200 CPM: 75% to 100% - RED (315° to 360°) -->
+          <stop offset="86%" stop-color="#d32f2f"/>
+          <stop offset="100%" stop-color="#d32f2f"/>
+        </linearGradient>
+          <radialGradient id="gloss" cx="50%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.18)" />
+            <stop offset="60%" stop-color="rgba(255,255,255,0.06)" />
+            <stop offset="100%" stop-color="rgba(255,255,255,0.0)" />
+          </radialGradient>
+        </defs>
+
+        <path d="M 80 250 A 190 190 0 0 1 460 250"
+              stroke="url(#gaugeGradient)"
+              stroke-width="22"
+              fill="none"
+              stroke-linecap="round"/>
+
+        <g id="ticks"></g>
+
+        <line id="needleShadow" x1="270" y1="250" x2="270" y2="90" class="needle-shadow"></line>
+        <line id="needle" x1="270" y1="250" x2="270" y2="90" class="needle" stroke="#37474f"></line>
+        <circle cx="270" cy="250" r="10" class="center-cap"></circle>
+
+        <rect x="60" y="20" width="420" height="240" rx="24" ry="24" fill="url(#gloss)" opacity="0.08" />
+      </svg>
+      <div id="rateStatus" class="rate-status">
+        <span id="statusMessage">Waiting for data...</span>
+      </div>
+      <div id="rateValue" class="rate-value">Rate: 0 CPM</div>
+       <!-- Add this status message display -->
+     
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat"><span id="statAvgRate" class="color-red">--</span><span class="label">Avg Rate</span></div>
+    <div class="stat"><span id="statMinRate" class="color-red">--</span><span class="label">Min Rate</span></div>
+    <div class="stat"><span id="statMaxRate" class="color-red">--</span><span class="label">Max Rate</span></div>
+    <div class="stat"><span id="statAvgDepth" class="color-red">--</span><span class="label">Avg Depth</span></div>
+    <div class="stat"><span id="statMinDepth" class="color-red">--</span><span class="label">Min Depth</span></div>
+    <div class="stat"><span id="statMaxDepth" class="color-red">--</span><span class="label">Max Depth</span></div>
+  </div>
+
+  <!-- Past sessions side panel -->
+  <div id="historyPanel" class="history-panel">
+    <h3>Past Sessions</h3>
+    <div id="historyTableContainer"></div>
+    <button id="downloadHistoryAllBtn" class="btn">Download All CSV</button>
+    <button id="clearHistoryBtn" class="btn">Clear History</button>
+    <button id="closeHistoryBtn" class="btn">Close</button>
+  </div>
+
+  <!-- Hidden legacy segments holder (kept for compatibility) -->
+  <div id="legacySegmentsHolder" >
+    <div class="segments" id="segmentsContainer" aria-hidden="true"></div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

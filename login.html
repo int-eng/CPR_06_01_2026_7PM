@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Login - JEEVTRONICS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="manifest" href="manifest.json" />
+<!-- Apple Touch Icon for iOS home screen -->
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root {
+    --brand-dark: #1b5e20;
+    --brand-mid:  #2e7d32;
+    --brand-light:#66bb6a;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, var(--brand-dark), var(--brand-light));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .login-card {
+    width: 360px;
+    max-width: 92%;
+    background: rgba(255,255,255,0.92);
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .logo {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 10px;
+    display: block;
+    object-fit: contain;
+  }
+
+  .brand {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--brand-dark);
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+  }
+
+  .sub {
+    font-size: 13px;
+    color: #3e3e3e;
+    margin-bottom: 12px;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px 12px;
+    margin: 8px 0;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #d0d0d0;
+    box-sizing: border-box;
+  }
+
+  button.login-btn {
+    width: 100%;
+    background: var(--brand-mid);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(46,125,50,0.18);
+  }
+
+  button.login-btn:active { transform: translateY(1px); }
+
+  .footer-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #666;
+  }
+
+/* Branding animation */
+@keyframes fadeZoom {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0; transform: scale(1); }
+}
+#brandAnimation {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--brand-dark), var(--brand-light));
+  z-index: 9999;
+}
+#brandAnimation img {
+  width: 120px; height: 120px;
+  animation: fadeZoom 1.5s ease-in-out forwards;
+}
+
+</style>
+</head>
+<body>
+<div id='brandAnimation'><img src='icon.png' alt='Jeevtronics Logo'/></div>
+  <div class="login-card">
+    <!-- optional logo file; if missing, the img tag will fail silently -->
+    <img src="icon.png" alt="Logo" class="logo" />
+    <div class="brand">JEEVTRONICS</div>
+    <div class="sub">CPR Sensor Training — please login</div>
+
+    <input id="username" placeholder="Enter ID" autocomplete="username" />
+    <input id="password" type="password" placeholder="Enter Password" autocomplete="current-password" />
+
+    <button class="login-btn" id="loginBtn">Login</button>
+
+    <div class="footer-note">Contact admin for credentials.</div>
+  </div>
+
+<script>
+/*
+  Case-sensitive login:
+  ID:   CPR00
+  Pass: JEEVTRONICS
+*/
+const VALID_ID = "CPR00";
+const VALID_PASS = "JEEVTRONICS";
+
+function doLogin() {
+  const id = document.getElementById('username').value.trim();
+  const pw = document.getElementById('password').value;
+  if (id === VALID_ID && pw === VALID_PASS) {
+    localStorage.setItem('isLoggedIn', 'true');
+    // store timestamp optionally
+    // localStorage.setItem('loginTime', Date.now().toString());
+    window.location.href = 'index.html';
+  } else {
+    alert('Invalid ID or Password (case-sensitive).');
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// If already logged in, skip the login page
+if (localStorage.getItem('isLoggedIn') === 'true') {
+  window.location.href = 'index.html';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const loginCard = document.querySelector('.login-card');
+  loginCard.style.display = 'none';
+  setTimeout(() => {
+    document.getElementById('brandAnimation').style.display = 'none';
+    loginCard.style.display = 'block';
+  }, 1600);
+});
+
+</script>
+</body>
+</html>

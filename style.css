@@ -1,0 +1,418 @@
+
+:root {
+  --brand-dark: #1b5e20;
+  --brand-mid:  #2e7d32;
+  --brand-light:#66bb6a;
+  --panel-white: rgba(255,255,255,0.92);
+}
+
+/* Page */
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, var(--brand-mid), var(--brand-light));
+  color: #263238;
+  margin: 0;
+  padding: 22px;
+  box-sizing: border-box;
+}
+
+/* Header row: branding left, logout right */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.branding {
+  color: white;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.branding img { width:36px; height:36px; border-radius:6px; }
+
+#logoutBtn {
+  background: #d32f2f;
+  color: white;
+  padding: 8px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+}
+#logoutBtn:hover { background: #b71c1c; }
+
+/* Title */
+.page-title { color: white; margin-top:6px; }
+
+/* Main UI layout */
+.controls { margin-bottom: 10px; }
+.btn {
+  padding: 10px 18px;
+  margin: 6px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+#connectBtn { background: #2e7d32; color: white; }
+#disconnectBtn { background: #d32f2f; color: white; display: none; }
+#startTrainingBtn { background: #2e7d32; color: white; display: none; }
+#stopTrainingBtn { background: #f57c00; color: white; display: none; }
+#downloadBtn { background: #fbc02d; color: black; display: none; }
+#nextSessionBtn { background: #2196f3; color: white; display: none; }
+#traineeName { padding: 8px; font-size: 14px; display: none; border-radius: 6px; border: 1px solid #ccc; }
+
+.status-dot {
+  display: inline-block;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: #d32f2f;
+  margin-left: 8px;
+}
+
+/* panels */
+.panel {
+  background: var(--panel-white);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  margin-bottom: 18px;
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.center-panel { text-align:center; }
+
+/* Add this to your CSS */
+.depth-container {
+  position: relative;
+  display: flex;
+  left: 20px;
+  align-items: center;
+  margin: 0 auto;
+  width: 100px; /* Enough width for bar + markers */
+}
+
+.depth-track {
+  width: 56px;
+  max-width: 56px;
+  height: 260px;
+  border-radius: 30px;
+  position: relative;
+  background: rgba(0,0,0,0.04);
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.06);
+}
+
+/* SPECIFIC POSITIONS FOR EACH MARKER - FIXED VERSION */
+.depth-markers {
+  position: absolute;
+  left: 16px; /* Move further right */
+  top: 10px; /* Start from top */
+  height: 240px;
+  width: 30px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.depth-marker {
+  position: static !important; /* Override absolute positioning */
+  color: #000000;
+  font-weight: 800 !important;
+  font-size: 18px;
+  font-family: Arial, sans-serif;
+  text-align: left;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.2); /* Makes text appear bolder */
+}
+
+/* Remove the nth-child positioning rules completely */
+
+/* SPECIFIC POSITIONS FOR EACH MARKER - THIS IS MISSING! */
+.depth-marker:nth-child(1) { top: 100%; }    /* 0 - bottom */
+.depth-marker:nth-child(2) { top: 83.33%; }  /* 10 */
+.depth-marker:nth-child(3) { top: 66.67%; }  /* 20 */
+.depth-marker:nth-child(4) { top: 50%; }     /* 30 */
+.depth-marker:nth-child(5) { top: 33.33%; }  /* 40 */
+.depth-marker:nth-child(6) { top: 16.67%; }  /* 50 */
+.depth-marker:nth-child(7) { top: 0%; }      /* 60 - top */
+
+/* Update the depth-wrapper */
+.depth-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 160px;
+}
+.depth-value {
+  font-size: 1.5rem;
+  font-weight:700;
+  color: #e40707;
+}
+
+.depth-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  border-radius: 30px 30px 0 0;
+  background: #2196f3;
+  box-shadow: inset 0 2px 10px rgba(255,255,255,0.12);
+  transition: height 0.9s cubic-bezier(.2,.9,.2,1);
+}
+
+/* Gauge */
+.gauge-container {
+  width: 540px;
+  height: 320px;
+  margin: 0 auto;
+  position: relative;
+}
+svg { width: 100%; height: 100%; overflow: visible; }
+.needle { stroke-width: 4; transform-origin: 270px 250px; transition: transform 0.6s ease-in-out, stroke 0.25s ease-in-out; stroke-linecap: round; }
+.needle-shadow { stroke: rgba(0,0,0,0.08); stroke-width: 8; transform-origin: 270px 250px; stroke-linecap: round; }
+.center-cap { fill: rgba(55,71,79,0.6); }
+
+
+/* Make the two ticks more prominent */
+.tick-line.tick-major {
+  stroke: #263238;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.tick-label {
+  font-size: 20px; /* Larger font for 100 and 120 labels */
+  fill: #263238;
+  text-anchor: middle;
+  font-weight: 900; /* Extra bold */
+  font-family: Arial, sans-serif;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+/* Rate Status Message - positioned exactly below needle pivot */
+.gauge-container {
+  width: 540px;
+  height: 320px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.rate-status {
+  position: absolute;
+  bottom: -10px; /* Position just below the gauge */
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  min-width: 220px;
+  z-index: 10;
+  white-space: nowrap;
+  border-top: 4px solid transparent;
+}
+
+/* Add arrow pointing up to connect with gauge */
+.rate-status::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid rgba(255, 255, 255, 0.95);
+}
+
+/* Status color classes with matching borders */
+.status-too-slow { 
+  color: #ff0000 !important; 
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-top-color: #b71c1c;
+}
+.status-slow { 
+  color: #d32f2f !important; 
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-top-color: #ff0000;
+}
+.status-good { 
+  color: #388e3c !important; 
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-top-color: #388e3c;
+}
+.status-fast { 
+  color: #f57c00 !important; 
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-top-color: #ff0000;
+}
+.status-too-fast { 
+  color: #ff0000 !important; 
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-top-color: #ff0000;
+}
+
+.rate-status::before {
+  border-bottom-color: inherit;
+  border-bottom-color: rgba(255, 255, 255, 0.95);
+}
+/* Mobile adjustments */
+@media (max-width: 760px) {
+  .rate-status {
+    font-size: 1.2rem;
+    padding: 10px 16px;
+    min-height: 44px;
+  }
+}
+/* Remove any minor tick styles if they exist */
+.tick-line:not(.tick-major) {
+  display: none;
+}
+
+.rate-value { 
+  position:absolute; 
+  top:10px; 
+  width:100%; 
+  text-align:center; 
+  font-weight:750; 
+  font-size:1.5rem; 
+  color:#263238; 
+}
+
+@media (max-width: 760px) {
+  .gauge-container { width: 92%; }
+  .depth-track { width: 48px; max-width: 48px; }
+  .tick-label { font-size: 12px; }
+  .depth-marker { font-size: 12px; right: -35px; }
+  .panel { padding: 12px; }
+}
+
+.stats-box {
+  background: rgba(255,255,255,0.15);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  transition: background 0.3s ease-in-out;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+.stats-grid strong {
+  transition: color 0.5s ease, background 0.5s ease;
+}
+.color-green { color: #388e3c; }
+.color-yellow { color: #fbc02d; }
+.color-red { color: #d32f2f; }
+
+.stats-bar {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 90%;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.2);
+ 
+  border-radius: 14px;
+  padding: 8px 12px;
+  font-weight: bold;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+.stats-bar .stat {
+  text-align: center;
+  flex: 1;
+}
+.stats-bar .label {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  display: block;
+  font-weight: normal;
+}
+
+.history-panel {
+  display:none;
+  position:fixed;
+  top:0;
+  right:0;
+  width:320px;
+  height:100%;
+  background:white;
+  z-index:999;
+  padding:16px;
+  overflow:auto;
+  box-shadow:-4px 0 12px rgba(0,0,0,0.2);
+}
+
+/* History panel buttons */
+#downloadHistoryAllBtn {
+  background:#66bb6a !important;
+  color:white !important;
+  margin-top:8px !important;
+  width:100%;
+}
+
+#clearHistoryBtn {
+  background:#d32f2f !important;
+  color:white !important;
+  margin-top:8px !important;
+  width:100%;
+}
+
+#closeHistoryBtn {
+  margin-top:8px !important;
+  width:100%;
+}
+
+/* History table */
+#historyTableContainer table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+#historyTableContainer th {
+  background:#f5f5f5;
+  padding:8px;
+  text-align:left;
+  border-bottom:2px solid #ddd;
+}
+
+#historyTableContainer td {
+  padding:8px;
+  border-bottom:1px solid #eee;
+}
+
+#historyTableContainer tr:hover {
+  background:#f9f9f9;
+}
+
+/* History button in header */
+#historyBtn {
+  background: #66bb6a !important;
+  color: white !important;
+  margin-left: 8px !important;
+}
